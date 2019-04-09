@@ -1,0 +1,345 @@
+---
+swagger: "2.0"
+info:
+  description: |
+    This is a learning server.
+  version: 1.0.0
+  title: NodeJS Learning Project
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: test@test.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: virtserver.swaggerhub.com
+basePath: /api
+tags:
+- name: city
+  description: Everything about cities
+- name: product
+  description: Product in the store
+- name: user
+  description: Operations about user
+schemes:
+- https
+- http
+paths:
+  /cities:
+    get:
+      tags:
+      - city
+      summary: Get all cities
+      description: Get all cities
+      operationId: getAllCities
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/City'
+        400:
+          description: Invalid status value
+    post:
+      tags:
+      - city
+      summary: Add a new city
+      operationId: addCity
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: City object that needs to be added
+        required: true
+        schema:
+          $ref: '#/definitions/City'
+      responses:
+        405:
+          description: Invalid input
+  /cities/{cityId}:
+    get:
+      tags:
+      - city
+      summary: Find city by ID
+      description: Returns a single city
+      operationId: getCityById
+      produces:
+      - application/json
+      parameters:
+      - name: cityId
+        in: path
+        description: ID of city to return
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/City'
+        400:
+          description: Invalid ID supplied
+        404:
+          description: City not found
+    put:
+      tags:
+      - city
+      summary: Updates a city
+      operationId: updateCity
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: cityId
+        in: path
+        description: ID of city that needs to be updated
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: City object that needs to be updated
+        required: true
+        schema:
+          $ref: '#/definitions/City'
+      responses:
+        405:
+          description: Invalid input
+    delete:
+      tags:
+      - city
+      summary: Deletes a city
+      operationId: deleteCity
+      produces:
+      - application/json
+      parameters:
+      - name: cityId
+        in: path
+        description: City id to delete
+        required: true
+        type: string
+      responses:
+        400:
+          description: Invalid ID supplied
+        404:
+          description: City not found
+  /products:
+    get:
+      tags:
+      - store
+      summary: Returns list of products
+      description: Returns list of products
+      operationId: getProducts
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+    post:
+      tags:
+      - product
+      summary: Add a new product
+      operationId: addProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Product object that needs to be added
+        required: true
+        schema:
+          $ref: '#/definitions/Product'
+      responses:
+        405:
+          description: Invalid input
+  /products/{productId}:
+    get:
+      tags:
+      - product
+      summary: Find product by ID
+      description: Find product by ID
+      operationId: getProductById
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product that needs to be fetched
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Product'
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Product not found
+    delete:
+      tags:
+      - product
+      summary: Delete product by ID
+      description: Delete product by ID
+      operationId: deleteProduct
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of the product that needs to be deleted
+        required: true
+        type: string
+      responses:
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Product not found
+  /products/{productId}/reviews:
+    get:
+      tags:
+      - review
+      summary: Find product reviews by product ID
+      description: Find product reviews by product ID
+      operationId: getProductReviewsById
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product which reviews need to be fetched
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Review'
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Product not found
+  /users:
+    get:
+      tags:
+      - user
+      summary: Get all users
+      operationId: getAllUsers
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+  /users/{userId}:
+    delete:
+      tags:
+      - user
+      summary: Delete user
+      description: This can only be done by the admin user.
+      operationId: deleteUser
+      produces:
+      - application/json
+      parameters:
+      - name: userId
+        in: path
+        description: The user Id that needs to be deleted
+        required: true
+        type: string
+      responses:
+        400:
+          description: Invalid userId supplied
+        404:
+          description: User not found
+definitions:
+  City:
+    type: object
+    required:
+      - name
+      - country
+      - location
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        example: 'Berlin'
+      country:
+        type: string
+        example: 'Germany'
+      capital:
+        type: boolean
+        default: false
+      location:
+        $ref: '#/definitions/Location'
+  Location:
+    type: object
+    required:
+      - lat
+      - long
+    properties:
+      lat:
+        type: number
+      long:
+        type: number
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      isAdmin:
+        type: boolean
+  Review:
+    type: object
+    required:
+      - user
+      - note
+    properties:
+      user:
+        type: string
+      note:
+        type: string
+  Product:
+    type: object
+    required:
+    - amount
+    - title
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+        example: door
+      amount:
+        type: integer
+      reviews:
+        type: array
+        items:
+          $ref: '#/definitions/Review'
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
